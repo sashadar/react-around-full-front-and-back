@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const isEmail = require('validator/lib/isEmail');
+const bcrypt = require('bcryptjs');
+const LoginError = require('../errors/loginerror');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -7,12 +9,14 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 2,
     maxlength: 30,
+    default: 'Jacques Cousteau',
   },
   about: {
     type: String,
     required: true,
     minlength: 2,
     maxlength: 30,
+    default: 'Explorer',
   },
   avatar: {
     type: String,
@@ -25,6 +29,7 @@ const userSchema = new mongoose.Schema({
       },
       message: 'Not supported URL',
     },
+    default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg',
   },
   email: {
     type: String,
@@ -38,7 +43,25 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+    minlength: 8,
   },
 });
+
+userSchema.statics.findUserByCredentials = function findUserByCredentials(
+  email,
+  password
+) {
+  return this.findOne({ email }).then((user) => {
+    if (!user) {
+      return Promise.reject(new LoginError('Incorrect password or email'));
+    }
+    return bcrypt.compare(password, user.password).then((matched) => {
+      if (!matched) {
+        return Promise.reject(new LoginError('Incorrect password or email'));
+      }
+      return user;
+    });
+  });
+};
 
 module.exports = mongoose.model('user', userSchema);

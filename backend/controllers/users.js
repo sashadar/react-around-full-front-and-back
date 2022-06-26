@@ -1,5 +1,7 @@
 const User = require('../models/user');
 const NotFoundError = require('../errors/notfounderror');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const getUsers = (req, res) => {
   User.find({})
@@ -26,15 +28,35 @@ const getUserById = (req, res) => {
     });
 };
 
-const addUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+const createUser = (req, res) => {
+  const { name, about, avatar, email, password } = req.body;
 
-  User.create({ name, about, avatar })
-    .then((user) => res.status(201).send({ data: user }))
+  bcrypt.hash(password, 10).then((hash) => {
+    User.create({ name, about, avatar, email, password: hash })
+      .then((user) => res.status(201).send({ data: user }))
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          res.status(400).send({ message: err.message });
+        }
+      });
+  });
+};
+
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'secret-string', {
+        expiresIn: '7d',
+      });
+      res.send({ token });
+    })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: err.message });
+      if (err.name === 'LoginError') {
+        res.status(err.statusCode).send({ message: err.message });
       }
+      res.status(500).send({ message: 'Server error. Unable to login' });
     });
 };
 
@@ -43,7 +65,7 @@ const updateUser = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     { name, about },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
     .orFail(() => {
       throw new NotFoundError('Unable to get user data');
@@ -67,7 +89,7 @@ const updateAvatar = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     { avatar },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
     .orFail(() => {
       throw new NotFoundError('Unable to get user data');
@@ -89,7 +111,8 @@ const updateAvatar = (req, res) => {
 module.exports = {
   getUsers,
   getUserById,
-  addUser,
+  createUser,
+  login,
   updateUser,
   updateAvatar,
 };
