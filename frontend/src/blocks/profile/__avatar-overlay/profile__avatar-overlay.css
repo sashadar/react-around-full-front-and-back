@@ -1,0 +1,6 @@
+.profile__avatar-overlay {
+  background-image: url("../../../images/icons/button-edit-avatar-icon.svg");
+  background-size: 26px 26px;
+  background-position: 50%;
+  background-repeat: no-repeat;
+}

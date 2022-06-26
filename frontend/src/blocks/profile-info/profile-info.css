@@ -1,0 +1,20 @@
+.profile-info {
+  margin-left: 30px;
+  max-width: 415px;
+  display: grid;
+  column-gap: 18px;
+  row-gap: 16px;
+  align-items: baseline;
+  grid-template-columns: auto;
+  grid-template-areas:
+    "profile-info__name profile-info__button-edit"
+    "profile-info__job profile-info__job";
+}
+
+@media screen and (max-width: 614px) {
+  .profile-info {
+    margin: 30px auto 0 auto;
+    row-gap: 14px;
+    column-gap: 10px;
+  }
+}

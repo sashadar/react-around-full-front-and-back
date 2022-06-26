@@ -1,0 +1,6 @@
+.element__button_action_like {
+  width: 21px;
+  height: 19px;
+  background-image: url("../../../../images/icons/heart-icon.svg");
+  background-color: #ffffff;
+}

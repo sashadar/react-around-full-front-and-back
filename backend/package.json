@@ -1,0 +1,38 @@
+{
+  "name": "around-express",
+  "version": "1.0.0",
+  "description": "a server for the Around th U.S. project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint .",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sashadar/around-express.git"
+  },
+  "keywords": [
+    "Node.js"
+  ],
+  "author": "Alex Darincev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sashadar/around-express/issues"
+  },
+  "homepage": "https://github.com/sashadar/around-express#readme",
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "nodemon": "^2.0.16"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "express": "^4.18.1",
+    "helmet": "^5.1.0",
+    "mongoose": "^6.3.4",
+    "validator": "^13.7.0"
+  }
+}
