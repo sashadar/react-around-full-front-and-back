@@ -24,13 +24,6 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
 
 app.use(helmet());
 app.use(bodyParser.json());
-/* app.use((req, res, next) => {
-  req.user = {
-    _id: '6294c4d8b16f4a160f083b75',
-  };
-
-  next();
-}); */
 
 app.post('/signin', login);
 app.post('/signup', createUser);
