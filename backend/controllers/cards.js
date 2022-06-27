@@ -4,7 +4,9 @@ const NotFoundError = require('../errors/notfounderror');
 const getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.status(200).send({ data: cards }))
-    .catch(() => res.status(500).send({ message: 'Error: unable to get cards' }));
+    .catch(() =>
+      res.status(500).send({ message: 'Error: unable to get cards' })
+    );
 };
 
 const addCard = (req, res) => {
@@ -22,7 +24,7 @@ const addCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.findOneAndRemove({ _id: req.params.cardId })
+  Card.findOneAndRemove({ _id: req.params.cardId, owner: req.user._id })
     .orFail(() => {
       throw new NotFoundError('Unable to get card to delete');
     })
@@ -44,7 +46,7 @@ const likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true },
+    { new: true }
   )
     .orFail(() => {
       throw new NotFoundError('Unable to find a card');
@@ -67,7 +69,7 @@ const dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true },
+    { new: true }
   )
     .orFail(() => {
       throw new NotFoundError('Unable to find a card');
