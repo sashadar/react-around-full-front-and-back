@@ -10,7 +10,7 @@ const getUsers = (req, res) => {
 };
 
 const getUserById = (req, res) => {
-  User.findById(req.params.userId)
+  User.findById(req.params.userId === 'me' ? req.user._id : req.params.userId)
     .orFail(() => {
       throw new NotFoundError('Unable to get user data');
     })
