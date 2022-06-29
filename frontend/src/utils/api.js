@@ -1,8 +1,10 @@
-const apiSettings = {
+/* const apiSettings = {
   serverUrl: 'https://around.nomoreparties.co',
   groupId: 'group-12',
   token: '652541db-3ac9-4c6c-9895-39ab2ae4c9f3',
-};
+}; */
+
+const BASE_URL = 'http://localhost:3000';
 
 const processResponse = (res) => {
   return res.ok
@@ -11,22 +13,13 @@ const processResponse = (res) => {
 };
 
 class Api {
-  constructor({ serverUrl, groupId, token }) {
-    this._serverUrl = serverUrl;
-    this._groupId = groupId;
-    this._token = token;
+  constructor({ baseUrl, headers }) {
+    this._baseUrl = baseUrl;
+    this._headers = headers;
   }
 
-  setup() {
-    this._mainUrl = `${this._serverUrl}/v1/${this._groupId}`;
-    this._headers = {
-      authorization: this._token,
-      'Content-Type': 'application/json',
-    };
-  }
-
-  addNewCard({ name, link }) {
-    return fetch(`${this._mainUrl}/cards`, {
+  addNewCard({ name, link, token }) {
+    return fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
       headers: this._headers,
       body: JSON.stringify({
@@ -36,32 +29,34 @@ class Api {
     }).then(processResponse);
   }
 
-  getUserData() {
-    return fetch(`${this._mainUrl}/users/me`, {
+  getUserData(token) {
+    return fetch(`${this._baseUrl}/users/me`, {
       headers: this._headers,
     }).then(processResponse);
   }
 
-  removeLike(cardId) {
-    return fetch(`${this._mainUrl}/cards/likes/${cardId}`, {
+  removeLike(cardId, token) {
+    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
       method: 'DELETE',
       headers: this._headers,
     }).then(processResponse);
   }
 
-  addLike(cardId) {
-    return fetch(`${this._mainUrl}/cards/likes/${cardId}`, {
+  addLike(cardId, token) {
+    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
       method: 'PUT',
       headers: this._headers,
     }).then(processResponse);
   }
 
-  changeLikeCardStatus(cardId, isNotLiked) {
-    return isNotLiked ? this.addLike(cardId) : this.removeLike(cardId);
+  changeLikeCardStatus({ cardId, isNotLiked, token }) {
+    return isNotLiked
+      ? this.addLike(cardId, token)
+      : this.removeLike(cardId, token);
   }
 
-  setUserData({ name, about }) {
-    return fetch(`${this._mainUrl}/users/me`, {
+  setUserData({ name, about, token }) {
+    return fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       headers: this._headers,
       body: JSON.stringify({
@@ -71,38 +66,41 @@ class Api {
     }).then(processResponse);
   }
 
-  setUserAvatar(avatarLink) {
-    return fetch(`${this._mainUrl}/users/me/avatar`, {
+  setUserAvatar({ avatarLink, token }) {
+    return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       headers: this._headers,
       body: JSON.stringify({ avatar: avatarLink }),
     }).then(processResponse);
   }
 
-  removeCard(cardId) {
-    return fetch(`${this._mainUrl}/cards/${cardId}`, {
+  removeCard({ cardId, token }) {
+    return fetch(`${this._baseUrl}/cards/${cardId}`, {
       method: 'DELETE',
       headers: this._headers,
     }).then(processResponse);
   }
 
-  getInitialCardsData() {
-    return fetch(`${this._mainUrl}/cards`, { headers: this._headers }).then(
+  getInitialCardsData(token) {
+    return fetch(`${this._baseUrl}/cards`, { headers: this._headers }).then(
       processResponse
     );
   }
 
-  getInitialData() {
-    return Promise.all([this.getUserData(), this.getInitialCardsData()]);
+  getInitialData({ token }) {
+    return Promise.all([
+      this.getUserData(token),
+      this.getInitialCardsData(token),
+    ]);
   }
 }
 
 const api = new Api({
-  serverUrl: apiSettings.serverUrl,
-  groupId: apiSettings.groupId,
-  token: apiSettings.token,
+  baseUrl: BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  },
 });
-
-api.setup();
 
 export default api;

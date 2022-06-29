@@ -23,7 +23,6 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
-
   const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
 
   const [selectedCard, setSelectedCard] = React.useState({});
@@ -36,6 +35,7 @@ function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [token, setToken] = React.useState(null);
 
   const [infoTooltipTitle, setInfoTooltipTitle] = React.useState('');
   const [infoTooltipIcon, setInfoTooltipIcon] = React.useState('');
@@ -78,7 +78,7 @@ function App() {
     const isLiked = card.likes.some((user) => user._id === currentUser._id);
 
     api
-      .changeLikeCardStatus(card._id, !isLiked)
+      .changeLikeCardStatus({ cardId: card._id, isNotLiked: !isLiked, token })
       .then((newCard) => {
         setCards(() =>
           cards.map((currentCard) =>
@@ -93,7 +93,7 @@ function App() {
 
   function handleCardDelete(card) {
     api
-      .removeCard(card._id)
+      .removeCard({ catdId: card._id, token })
       .then(() =>
         setCards(() =>
           cards.filter((currentCard) =>
@@ -108,7 +108,7 @@ function App() {
 
   function handleUpdateUser({ name, about }) {
     api
-      .setUserData({ name, about })
+      .setUserData({ name, about, token })
       .then((userData) => {
         setCurrentUser(userData);
         closeAllPopups();
@@ -120,7 +120,7 @@ function App() {
 
   function handleUpdateAvatar({ avatarLink }) {
     api
-      .setUserAvatar(avatarLink)
+      .setUserAvatar({ avatarLink, token })
       .then((userData) => {
         setCurrentUser(userData);
         closeAllPopups();
@@ -132,7 +132,7 @@ function App() {
 
   function handleAddPlaceSubmit({ name, link }) {
     api
-      .addNewCard({ name, link })
+      .addNewCard({ name, link, token })
       .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();
@@ -144,7 +144,7 @@ function App() {
 
   React.useEffect(() => {
     api
-      .getInitialData()
+      .getInitialData({ token })
       .then(([userData, initialCardsData]) => {
         setCurrentUser(userData);
         setCards(initialCardsData);
@@ -186,6 +186,7 @@ function App() {
   const tokenCheck = () => {
     const token = localStorage.getItem('token');
     if (token) {
+      setToken(token);
       auth
         .checkToken(token)
         .then((res) => {
