@@ -1,48 +1,45 @@
 const User = require('../models/user');
 const NotFoundError = require('../errors/notfounderror');
+const InputValidationError = require('../errors/inputvalidationerror');
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send({ data: users }))
-    .catch(() => res.status(500).send({ message: 'unable to get Users' }));
+    .catch(next);
 };
 
-const getUserById = (req, res) => {
+const getUserById = (req, res, next) => {
   User.findById(req.params.userId === 'me' ? req.user._id : req.params.userId)
     .orFail(() => {
-      throw new NotFoundError('Unable to get user data');
+      throw new NotFoundError('User not found');
     })
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'NotFoundError') {
-        res.status(err.statusCode).send({ Error: err.message });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Not valid data' });
-      } else {
-        res
-          .status(500)
-          .send({ message: 'Server error. Unable to get user by Id' });
+      if (err.name === 'CastError') {
+        throw new NotFoundError('User not found');
       }
-    });
+    })
+    .catch(next);
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
 
-  bcrypt.hash(password, 10).then((hash) => {
-    User.create({ name, about, avatar, email, password: hash })
-      .then((user) => res.status(201).send({ data: user }))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          res.status(400).send({ message: err.message });
-        }
-        res
-          .status(500)
-          .send({ message: 'Server error. Unable to create user' });
-      });
-  });
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => User.create({ name, about, avatar, email, password: hash }))
+    .then((user) => res.status(201).send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        throw new InputValidationError(
+          'Input validation failed: unable to create user'
+        );
+      }
+    })
+    .catch(next);
 };
 
 const login = (req, res, next) => {
@@ -55,15 +52,10 @@ const login = (req, res, next) => {
       });
       res.send({ token });
     })
-    .catch((err) => {
-      if (err.name === 'LoginError') {
-        res.status(err.statusCode).send({ message: err.message });
-      }
-      res.status(500).send({ message: 'Server error. Unable to login' });
-    });
+    .catch(next);
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -71,23 +63,20 @@ const updateUser = (req, res) => {
     { new: true, runValidators: true }
   )
     .orFail(() => {
-      throw new NotFoundError('Unable to get user data');
+      throw new NotFoundError('User not found');
     })
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'NotFoundError') {
-        res.status(err.statusCode).send({ Error: err.message });
-      } else if (err.name === 'ValidationError') {
-        res.status(400).send({ message: err.message });
-      } else {
-        res
-          .status(500)
-          .send({ message: 'Server error. Unable to update user data' });
+      if (err.name === 'ValidationError') {
+        throw new InputValidationError(
+          'Input validation failed: unable to upfdate user data'
+        );
       }
-    });
+    })
+    .catch(next);
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -99,16 +88,13 @@ const updateAvatar = (req, res) => {
     })
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'NotFoundError') {
-        res.status(err.statusCode).send({ Error: err.message });
-      } else if (err.name === 'ValidationError') {
-        res.status(400).send({ message: err.message });
-      } else {
-        res
-          .status(500)
-          .send({ message: 'Server error. Unable to update avatar' });
+      if (err.name === 'ValidationError') {
+        throw new InputValidationError(
+          'Input validation failed: unable to create card'
+        );
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports = {
