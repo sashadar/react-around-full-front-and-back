@@ -32,6 +32,8 @@ const deleteCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new NotFoundError('A card to be deleted not found');
+      } else {
+        throw err;
       }
     })
     .catch(next);
@@ -50,6 +52,8 @@ const likeCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new NotFoundError('Unable to find a card');
+      } else {
+        throw err;
       }
     })
     .catch(next);
@@ -68,6 +72,8 @@ const dislikeCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new NotFoundError('Unable to find a card');
+      } else {
+        throw err;
       }
     })
     .catch(next);

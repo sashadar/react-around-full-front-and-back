@@ -71,6 +71,8 @@ const updateUser = (req, res, next) => {
         throw new InputValidationError(
           'Input validation failed: unable to upfdate user data'
         );
+      } else {
+        throw err;
       }
     })
     .catch(next);
@@ -92,6 +94,8 @@ const updateAvatar = (req, res, next) => {
         throw new InputValidationError(
           'Input validation failed: unable to create card'
         );
+      } else {
+        throw err;
       }
     })
     .catch(next);
