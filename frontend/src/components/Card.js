@@ -5,14 +5,14 @@ function Card(props) {
   const currentUser = React.useContext(CurrentUserContext);
 
   // Checking if the current user is the owner of the current card
-  const isOwn = props.card.owner._id === currentUser._id;
+  const isOwn = props.card.owner === currentUser._id;
 
   const cardDeleteButtonClassName = `element__button element__button_action_delete ${
     isOwn ? '' : 'element__button_inactive'
   }`;
 
   // Check if the card was liked by the current user
-  const isLiked = props.card.likes.some((user) => user._id === currentUser._id);
+  const isLiked = props.card.likes.some((user) => user === currentUser._id);
 
   const cardLikeButtonClassName = `element__button element__button_action_like ${
     isLiked ? 'element__button_action_like_active' : ''

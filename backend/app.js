@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
+const cors = require('cors');
 
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
@@ -12,18 +13,24 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
-/* mongoose.connect('mongodb://localhost:27017/aroundb', {
+const corsOptions = {
+  origin: /http:\/\/localhost:3001\S*/,
+  allowedHeaders: ['Content-type', 'Authorization'],
+};
+
+/* mongoose.connect('mongodb://localhost:27017/aroundb2', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
 }); */
 
-mongoose.connect('mongodb://localhost:27017/aroundb', {
+mongoose.connect('mongodb://localhost:27017/aroundb7', {
   useNewUrlParser: true,
 });
 
 app.use(helmet());
 app.use(bodyParser.json());
+app.use(cors(corsOptions));
 
 app.post('/signin', login);
 app.post('/signup', createUser);

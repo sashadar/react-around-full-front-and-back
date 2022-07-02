@@ -35,7 +35,6 @@ function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [token, setToken] = React.useState(null);
 
   const [infoTooltipTitle, setInfoTooltipTitle] = React.useState('');
   const [infoTooltipIcon, setInfoTooltipIcon] = React.useState('');
@@ -75,14 +74,19 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((user) => user._id === currentUser._id);
+    const isLiked = card.likes.some((userId) => userId === currentUser._id);
+    console.log(`handleCardLike(App.js): cardId to like: ${card._id}`);
 
     api
-      .changeLikeCardStatus({ cardId: card._id, isNotLiked: !isLiked, token })
+      .changeLikeCardStatus({
+        cardId: card._id,
+        isNotLiked: !isLiked,
+        token: localStorage.getItem('token'),
+      })
       .then((newCard) => {
         setCards(() =>
           cards.map((currentCard) =>
-            currentCard._id === card._id ? newCard : currentCard
+            currentCard._id === card._id ? newCard.data : currentCard
           )
         );
       })
@@ -92,8 +96,9 @@ function App() {
   }
 
   function handleCardDelete(card) {
+    console.log(`handleCardDelete(App.js): card._id: ${card._id}`);
     api
-      .removeCard({ catdId: card._id, token })
+      .removeCard({ cardId: card._id, token: localStorage.getItem('token') })
       .then(() =>
         setCards(() =>
           cards.filter((currentCard) =>
@@ -108,9 +113,9 @@ function App() {
 
   function handleUpdateUser({ name, about }) {
     api
-      .setUserData({ name, about, token })
+      .setUserData({ name, about, token: localStorage.getItem('token') })
       .then((userData) => {
-        setCurrentUser(userData);
+        setCurrentUser(userData.data);
         closeAllPopups();
       })
       .catch((err) => {
@@ -120,9 +125,9 @@ function App() {
 
   function handleUpdateAvatar({ avatarLink }) {
     api
-      .setUserAvatar({ avatarLink, token })
+      .setUserAvatar({ avatarLink, token: localStorage.getItem('token') })
       .then((userData) => {
-        setCurrentUser(userData);
+        setCurrentUser(userData.data);
         closeAllPopups();
       })
       .catch((err) => {
@@ -132,9 +137,9 @@ function App() {
 
   function handleAddPlaceSubmit({ name, link }) {
     api
-      .addNewCard({ name, link, token })
+      .addNewCard({ name, link, token: localStorage.getItem('token') })
       .then((newCard) => {
-        setCards([newCard, ...cards]);
+        setCards([newCard.data, ...cards]);
         closeAllPopups();
       })
       .catch((err) => {
@@ -144,10 +149,12 @@ function App() {
 
   React.useEffect(() => {
     api
-      .getInitialData({ token })
+      .getInitialData({ token: localStorage.getItem('token') })
       .then(([userData, initialCardsData]) => {
-        setCurrentUser(userData);
-        setCards(initialCardsData);
+        setCurrentUser(userData.data);
+        console.log(`initialCardsData[0].name: ${initialCardsData}`);
+        setCards(initialCardsData.data);
+        console.log(`init cards[0]: ${cards[0]}`);
       })
       .catch((err) => {
         console.log(`Error:     ${err}`);
@@ -185,8 +192,9 @@ function App() {
 
   const tokenCheck = () => {
     const token = localStorage.getItem('token');
+    console.log(`\n App.js(front).tokencheck 0: token set to: ${token}`);
     if (token) {
-      setToken(token);
+      console.log(`\n App.js(front).tokencheck 1: token set to: ${token}`);
       auth
         .checkToken(token)
         .then((res) => {

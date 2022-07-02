@@ -11,9 +11,15 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator(v) {
+      validator(
+        v /* {
         return /^(https?):\/\/(www\.)?[\w-]+\.[a-z]+\/?[\w.~:/?%#[\]@!$&'()*+,;=]*$/gm.test(
           v,
+        );
+      }, */
+      ) {
+        return /^(http:\/\/|https:\/\/)(www.)?[a-zA-Z0-9-._~:/?%#[\]@!$&'()*+,;=]+\.[a-zA-Z0-9-._~:/?%#[\]@!$&'()*+,;=]{2,}#?$/gim.test(
+          v
         );
       },
       message: 'Not supported URL',

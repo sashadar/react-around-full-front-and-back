@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
   }
 
   const token = authorization.replace('Bearer ', '');
-  console.log(`token: ${token}`);
+  console.log(`\n auth.js(back): token: ${token}`);
 
   let payload;
   try {
@@ -18,7 +18,7 @@ module.exports = (req, res, next) => {
   } catch (err) {
     throw new LoginError('Authorization required');
   }
-  console.log(`payload: ${JSON.stringify(payload)}\n`);
+  console.log(`\n auth.js(back): payload: ${JSON.stringify(payload)}\n`);
   req.user = payload;
   next();
 };

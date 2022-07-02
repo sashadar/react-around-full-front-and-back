@@ -23,7 +23,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator(v) {
-        return /^(https?):\/\/(www\.)?[\w-]+\.[a-z]+\/?[\w.~:/?%#[\]@!$&'()*+,;=]*$/gm.test(
+        /* return /^(https?):\/\/(www\.)?[\w-]+\.[a-z]+\/?[\w.~:/?%#[\]@!$&'()*+,;=]*$/gm.test(
+          v
+        ); */
+        return /^(http:\/\/|https:\/\/)(www.)?[a-zA-Z0-9-._~:/?%#[\]@!$&'()*+,;=]+\.[a-zA-Z0-9-._~:/?%#[\]@!$&'()*+,;=]{2,}#?$/gim.test(
           v
         );
       },
@@ -56,7 +59,7 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(
     .select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new LoginError('Incorrect password or email'));
+        throw new LoginError('Incorrect password or email');
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
