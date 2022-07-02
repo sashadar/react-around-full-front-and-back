@@ -9,6 +9,8 @@ const cardsRouter = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middleware/auth');
 
+const errorHandler = require('./middleware/errorHandler');
+
 const { PORT = 3000 } = process.env;
 
 const app = express();
@@ -42,6 +44,7 @@ app.use('/', (req, res) => {
   res.send(JSON.stringify({ message: 'Requested resource not found' }));
 });
 
+app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`listening on port: ${PORT}`);
 });
