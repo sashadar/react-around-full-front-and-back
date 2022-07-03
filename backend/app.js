@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+require('dotenv').config();
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -23,12 +24,6 @@ const corsOptions = {
   origin: /http:\/\/localhost:3001\S*/,
   allowedHeaders: ['Content-type', 'Authorization'],
 };
-
-/* mongoose.connect('mongodb://localhost:27017/aroundb2', {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-}); */
 
 mongoose.connect('mongodb://localhost:27017/aroundb7', {
   useNewUrlParser: true,
