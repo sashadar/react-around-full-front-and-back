@@ -9,7 +9,6 @@ import CurrentUserContext from '../contexts/CurrentUserContext';
 
 function Main(props) {
   const currentUser = React.useContext(CurrentUserContext);
-  /* console.log(props.cards[0]); */
 
   return (
     <>

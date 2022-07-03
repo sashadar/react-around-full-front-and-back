@@ -1,7 +1,5 @@
 /* const BASE_URL = 'https://register.nomoreparties.co'; */
 const BASE_URL = 'http://localhost:3000';
-/* const BASE_URL = 'https://around.nomoreparties.co/v1/group-12'; */
-/* const BASE_URL = 'https://register.nomoreparties.co'; */
 
 const processResponse = (res) => {
   return res.ok
@@ -35,9 +33,6 @@ export const authorize = (email, password) => {
   })
     .then(processResponse)
     .then((data) => {
-      console.log(
-        `(front)auth.js: setting token to dataStorage. token: ${data.token}`
-      );
       localStorage.setItem('token', data.token);
       return data;
     });
@@ -51,5 +46,4 @@ export const checkToken = (token) => {
       Authorization: `Bearer ${token}`,
     },
   }).then(processResponse);
-  /* .then((data) => data) */
 };

@@ -1,14 +1,3 @@
-/* const apiSettings = {
-  serverUrl: 'https://around.nomoreparties.co',
-  groupId: 'group-12',
-  token: '652541db-3ac9-4c6c-9895-39ab2ae4c9f3',
-}; */
-
-/* headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  },
- */
 const BASE_URL = 'http://localhost:3000';
 /* const BASE_URL = 'https://around.nomoreparties.co/v1/group-12'; */
 
@@ -24,10 +13,6 @@ class Api {
   }
 
   addNewCard({ name, link, token }) {
-    /* console.log(`api.addnewcard: name: ${name}`);
-    console.log(`api.addnewcard: link: ${link}`);
-    console.log(`api.addnewcard: token: ${token}`); */
-
     return fetch(`${this._baseUrl}/cards`, {
       method: 'POST',
       headers: {

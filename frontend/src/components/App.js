@@ -75,7 +75,6 @@ function App() {
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((userId) => userId === currentUser._id);
-    console.log(`handleCardLike(App.js): cardId to like: ${card._id}`);
 
     api
       .changeLikeCardStatus({
@@ -96,7 +95,6 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    console.log(`handleCardDelete(App.js): card._id: ${card._id}`);
     api
       .removeCard({ cardId: card._id, token: localStorage.getItem('token') })
       .then(() =>
@@ -152,9 +150,7 @@ function App() {
       .getInitialData({ token: localStorage.getItem('token') })
       .then(([userData, initialCardsData]) => {
         setCurrentUser(userData.data);
-        console.log(`initialCardsData[0].name: ${initialCardsData}`);
         setCards(initialCardsData.data);
-        console.log(`init cards[0]: ${cards[0]}`);
       })
       .catch((err) => {
         console.log(`Error:     ${err}`);
@@ -192,9 +188,8 @@ function App() {
 
   const tokenCheck = () => {
     const token = localStorage.getItem('token');
-    console.log(`\n App.js(front).tokencheck 0: token set to: ${token}`);
+
     if (token) {
-      console.log(`\n App.js(front).tokencheck 1: token set to: ${token}`);
       auth
         .checkToken(token)
         .then((res) => {

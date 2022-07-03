@@ -20,18 +20,14 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
-const corsOptions = {
-  origin: /http:\/\/localhost:3001\S*/,
-  allowedHeaders: ['Content-type', 'Authorization'],
-};
-
 mongoose.connect('mongodb://localhost:27017/aroundb7', {
   useNewUrlParser: true,
 });
 
 app.use(helmet());
 app.use(bodyParser.json());
-app.use(cors(corsOptions));
+app.use(cors());
+app.options('*', cors());
 app.use(requestLogger);
 
 app.post('/signin', login);
