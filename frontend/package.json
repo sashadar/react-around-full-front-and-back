@@ -1,8 +1,8 @@
 {
-  "name": "around-react",
+  "name": "around-react-frontend",
   "version": "0.2.0",
   "private": true,
-  "homepage": "https://sashadar.github.io/react-around-auth",
+  "homepage": "https://github.com/sashadar/react-around-api-full",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",

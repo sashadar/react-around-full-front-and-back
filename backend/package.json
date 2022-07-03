@@ -1,5 +1,5 @@
 {
-  "name": "around-express",
+  "name": "around-backend",
   "version": "1.0.0",
   "description": "a server for the Around th U.S. project",
   "main": "app.js",
@@ -11,17 +11,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sashadar/around-express.git"
+    "url": "git+https://github.com/sashadar/react-around-api-full.git"
   },
   "keywords": [
-    "Node.js"
+    "Node.js",
+    "JavaScript",
+    "Express"
   ],
   "author": "Alex Darincev",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sashadar/around-express/issues"
+    "url": "https://github.com/sashadar/react-around-api-full/issues"
   },
-  "homepage": "https://github.com/sashadar/around-express#readme",
+  "homepage": "https://github.com/sashadar/react-around-api-full#readme",
   "devDependencies": {
     "eslint": "^8.15.0",
     "eslint-config-airbnb-base": "^15.0.0",
