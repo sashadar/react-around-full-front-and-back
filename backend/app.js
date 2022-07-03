@@ -30,6 +30,13 @@ app.use(cors());
 app.options('*', cors());
 app.use(requestLogger);
 
+//should be removed after passing the review
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Server will crash now');
+  }, 0);
+});
+
 app.post('/signin', login);
 app.post('/signup', createUser);
 
