@@ -1,5 +1,4 @@
-const BASE_URL = 'http://localhost:3000';
-/* const BASE_URL = 'https://around.nomoreparties.co/v1/group-12'; */
+const BASE_URL = 'https://api.alexdar.students.nomoredomainssbs.ru';
 
 const processResponse = (res) => {
   return res.ok
