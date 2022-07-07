@@ -4,11 +4,12 @@ require('dotenv').config();
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cors = require('cors');
-const { celebrate, Joi, errors } = require('celebrate');
+const { errors } = require('celebrate');
 
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
-const { createUser, login } = require('./controllers/users');
+const signInRouter = require('./routes/signin');
+const signUpRouter = require('./routes/signup');
 
 const auth = require('./middleware/auth');
 const errorHandler = require('./middleware/errorHandler');
@@ -37,26 +38,8 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.post(
-  '/signin',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required().min(8),
-    }),
-  }),
-  login
-);
-app.post(
-  '/signup',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required().min(8),
-    }),
-  }),
-  createUser
-);
+app.use('/signin', signInRouter);
+app.use('/signup', signUpRouter);
 
 app.use('/cards', auth, cardsRouter);
 app.use('/users', auth, usersRouter);
