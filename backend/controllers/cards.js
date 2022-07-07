@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/notfounderror');
 const InputValidationError = require('../errors/inputvalidationerror');
+const ForbiddenError = require('../errors/forbiddenerror');
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -24,9 +25,17 @@ const addCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findOneAndRemove({ _id: req.params.cardId, owner: req.user._id })
-    .orFail(() => {
-      throw new NotFoundError('A card to be deleted not found');
+  Card.findById(req.params.cardId)
+    .then((card) => {
+      if (!card) {
+        throw new NotFoundError('A card to be deleted not found');
+      } else if (card.owner.toString !== req.user._id) {
+        throw new ForbiddenError(
+          'Unable to delete a card owned by another user'
+        );
+      } else {
+        return Card.deleteOne({ _id: req.params.cardId });
+      }
     })
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
