@@ -14,7 +14,8 @@ const getUsers = (req, res, next) => {
 };
 
 const getUserById = (req, res, next) => {
-  User.findById(req.params.userId === 'me' ? req.user._id : req.params.userId)
+  /* User.findById(req.params.userId === 'me' ? req.user._id : req.params.userId) */
+  User.findById(req.params.userId ? req.params.userId : req.user._id)
     .orFail(() => {
       throw new NotFoundError('User not found');
     })

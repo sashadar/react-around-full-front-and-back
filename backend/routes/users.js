@@ -11,7 +11,16 @@ const {
 
 router.get('/', getUsers);
 //also applied for GET /users/me
-router.get('/:userId', getUserById);
+router.get('/me', getUserById);
+router.get(
+  '/:userId',
+  celebrate({
+    params: Joi.object().keys({
+      userId: Joi.string().required().hex().length(24),
+    }),
+  }),
+  getUserById
+);
 router.patch(
   '/me',
   celebrate({
