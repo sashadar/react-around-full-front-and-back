@@ -1,4 +1,4 @@
-const BASE_URL = 'https://api.alexdar.students.nomoredomainssbs.ru';
+const BASE_URL = 'https://api.alexdar.around.students.nomoredomainssbs.ru';
 /* const BASE_URL = 'http://localhost:3000'; */
 
 const processResponse = (res) => {
